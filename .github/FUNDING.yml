@@ -1,4 +1,3 @@
 # These are supported funding model platforms
 
-custom:  ['https://mydreamart.gumroad.com/membership']
-custom:  ['https://paypal.me/mydreamart?locale.x=en_GB']
+custom:  ['https://mydreamart.gumroad.com/membership','https://paypal.me/mydreamart?locale.x=en_GB']
