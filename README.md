@@ -9,11 +9,17 @@ sound feature after completing task and for the timer running
 Steps to Make this addon Effective:
 
 step1: Decide the task to be worked on.
+
 Step2: Set the timer to the default settings.
+
 Step3: Start the timer and work until the timer is finished.
+
 Step4: Take a short break of 5 minutes(default)
+
 Step5: Repeat from step 2 and continue with the task until its completed.
+
 step6: If you have completed 4 rounds then take a long break.
+
 Tested with blender 2.91.2.92, 2.93
 
 Known Issues:
