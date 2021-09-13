@@ -73,22 +73,6 @@ def check_pomo():
     estipomoCount = pomogrp.esti_pomo
     lngbropomo = int(prefs.lng_pomoCount)
     if NaN_var == 'NaN' :
-        # if pomogrp.complted_pomo == estipomoCount:
-        #     time_calc()
-        #     track(pomogrp.taskname)
-        #     pomogrp.pomotimer_run_stat = False
-        #     pomogrp.srttimer_run_stat = False
-        #     pomogrp.complted_pomo = 0
-        #     pomogrp.anytimerrinning = False
-        #     tasknm = pomogrp.taskname
-        #     killsound()
-        #     if prefs.use_endSound and not pomogrp.anytimerrinning:
-        #         playendsound(prefs.playendfile)
-        #     bpy.ops.message.messagebox('INVOKE_DEFAULT', message = tasknm, alrt_message = 'Task Completed')
-        #     redraw_panel(PF_PT_NPanel)
-        #     return None
-
-
         if estipomoCount >= 1 and estipomoCount>= pomogrp.complted_pomo :
             if pomogrp.complted_pomo % lngbropomo == 0:
                 totalsrttime = datetime.datetime.now()
@@ -184,7 +168,8 @@ def check_srtbrk():
             bpy.ops.pomofocus.pomostart()
         if compltedpomoCount == estipomoCount:
             time_calc()
-            track(pomogrp.taskname)
+            pomogrp.csv_status = 'Completed'
+            track(pomogrp.taskname, pomogrp.csv_status)
             pomogrp.complted_pomo = 0
             pomogrp.anytimerrinning = False
             pomogrp.pomotimer_run_stat = False
@@ -249,9 +234,11 @@ def check_lngbrk():
         redraw_panel(PF_PT_NPanel)
         if compltedpomoCount < estipomoCount:
             bpy.ops.pomofocus.pomostart()
+        
         if compltedpomoCount == estipomoCount:
             time_calc()
-            track(pomogrp.taskname)
+            pomogrp.csv_status = 'Completed'
+            track(pomogrp.taskname, pomogrp.csv_status)
             pomogrp.complted_pomo = 0
             pomogrp.pomotimer_run_stat = False
             pomogrp.srttimer_run_stat = False
@@ -436,11 +423,11 @@ def time_calc():
 def format_time(d):
     return '{:02}h {:02}m {:02}s'.format(d // 3600, d % 3600 // 60, d % 60)
 
-def track(e):
+def track(e,status):
     
     prefs = utils.common.prefs()
     pomogrp = utils.common.props()
-    l = "{0},{1},{2},{3},{4}\n".format(e, pomogrp.complted_pomo, pomogrp.complted_srt, pomogrp.complted_lng, pomogrp.total_timeSpent, )
+    l = "{0},{1},{2},{3},{4},{5}\n".format(e, pomogrp.complted_pomo, pomogrp.complted_srt, pomogrp.complted_lng, pomogrp.total_timeSpent,status )
     try:
         with open(prefs.csv_path, mode='a', encoding='utf-8') as f:
             f.write(l)

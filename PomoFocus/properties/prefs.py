@@ -97,7 +97,7 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
     scriptdir = bpy.path.abspath(os.path.dirname(__file__))
 
     # Saving the details
-    csv_first_line: bpy.props.StringProperty(name=".csv First Line", description=".csv first line to be written, contains field names.", default="task name,pomodoros used,short break count,long break count,total time spent", )
+    csv_first_line: bpy.props.StringProperty(name=".csv First Line", description=".csv first line to be written, contains field names.", default="task name,pomodoros used,short break count,long break count,total time spent,status", )
     previous_csv_path: bpy.props.StringProperty(name="Previous CSV Path", description="Used to detect path change and to copy old csv from on change.", default=Utils.get_default_csv_path(), maxlen=1024, subtype='FILE_PATH', )
     csv_path: bpy.props.StringProperty(name="CSV Path", description="Location of .csv with tracking data.", default=Utils.get_default_csv_path(), update=update, maxlen=1024, subtype='FILE_PATH', )
 
