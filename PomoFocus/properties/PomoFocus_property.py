@@ -16,6 +16,7 @@ class PomoFocus_PG_Properties(bpy.types.PropertyGroup):
     rem_seconds: IntProperty(default=0)
     taskname: StringProperty(name="Title", default='New Pomodoro')
     csv_status: StringProperty(name="Satus", default='')
+    added_time: StringProperty(name="Time and Date", default='')
     esti_pomo: IntProperty(default=1, min = 1, max = 10)
     
     estipomo_time : StringProperty(name="alarm time", default='NaN')

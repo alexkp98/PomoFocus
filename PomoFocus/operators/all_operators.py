@@ -20,6 +20,8 @@ class PomoFocus_OT_Pomostart(bpy.types.Operator):
         prefs = utils.common.prefs()
         pomogrp = utils.common.props()
         now = datetime.datetime.now()
+        if pomogrp.added_time == '':
+            pomogrp.added_time = now.strftime("%Y-%m-%d %H:%M:%S")
         totaltime = now + datetime.timedelta(minutes = 1) 
         added_time = totaltime.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -305,6 +307,10 @@ class ResetTime(bpy.types.Operator):
     bl_label = 'Reset to Default'
 
     def execute(self, context):
+        pomogrp = utils.common.props()
+        pomogrp.csv_status = 'Stopped'
+        time_calc(pomogrp.csv_status)
+        track(pomogrp.taskname, pomogrp.csv_status)
         if bpy.app.timers.is_registered(check_pomo):
             bpy.app.timers.unregister(check_pomo)
 
@@ -314,7 +320,7 @@ class ResetTime(bpy.types.Operator):
         if bpy.app.timers.is_registered(check_lngbrk):
             bpy.app.timers.unregister(check_lngbrk)
         
-        pomogrp = utils.common.props()
+        
         pomogrp.pomotimer_run_stat = False
         pomogrp.srttimer_run_stat = False
         pomogrp.lngtimer_run_stat = False
@@ -421,8 +427,12 @@ def time_calc(status):
         totaltime_insecs = totaltime_inmins * 60
         pomogrp.total_timeSpent = format_time(totaltime_insecs)
     elif status == 'Stopped':
-        pass
-
+        addedDt = pomogrp.added_time 
+        DtTm = datetime.datetime.strptime(addedDt, "%Y-%m-%d %H:%M:%S")
+        now = datetime.datetime.now()
+        # curDt = now.strftime("%Y-%m-%d %H:%M:%S")
+        Tm_wked = now - DtTm
+        pomogrp.total_timeSpent = format_time(Tm_wked.seconds)
 def format_time(d):
     return '{:02}h {:02}m {:02}s'.format(d // 3600, d % 3600 // 60, d % 60)
 
@@ -430,7 +440,7 @@ def track(e,status):
     
     prefs = utils.common.prefs()
     pomogrp = utils.common.props()
-    l = "{0},{1},{2},{3},{4},{5}\n".format(e, pomogrp.complted_pomo, pomogrp.complted_srt, pomogrp.complted_lng, pomogrp.total_timeSpent,status )
+    l = "{0},{1},{2},{3},{4},{5},{6}\n".format(pomogrp.added_time, e, pomogrp.complted_pomo, pomogrp.complted_srt, pomogrp.complted_lng, pomogrp.total_timeSpent,status )
     try:
         with open(prefs.csv_path, mode='a', encoding='utf-8') as f:
             f.write(l)
@@ -438,3 +448,4 @@ def track(e,status):
         bpy.ops.message.messagebox('INVOKE_DEFAULT', message = 'Please close the file to write the data', alrt_message = 'Error')
     # resetting the value to empty
     pomogrp.csv_status = ''
+    pomogrp.added_time = ''
