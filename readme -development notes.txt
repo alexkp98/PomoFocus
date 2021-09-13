@@ -29,7 +29,7 @@ To-Do
 -- custom time for all timers
 -- Sound for long and short break
 -- add date and status in csv format
--- add data for non completed ites
+-- add data for non completed items
 
 
 
