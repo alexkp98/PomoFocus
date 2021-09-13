@@ -167,8 +167,8 @@ def check_srtbrk():
         if compltedpomoCount < estipomoCount:
             bpy.ops.pomofocus.pomostart()
         if compltedpomoCount == estipomoCount:
-            time_calc()
             pomogrp.csv_status = 'Completed'
+            time_calc(pomogrp.csv_status)
             track(pomogrp.taskname, pomogrp.csv_status)
             pomogrp.complted_pomo = 0
             pomogrp.anytimerrinning = False
@@ -236,8 +236,8 @@ def check_lngbrk():
             bpy.ops.pomofocus.pomostart()
         
         if compltedpomoCount == estipomoCount:
-            time_calc()
             pomogrp.csv_status = 'Completed'
+            time_calc(pomogrp.csv_status)
             track(pomogrp.taskname, pomogrp.csv_status)
             pomogrp.complted_pomo = 0
             pomogrp.pomotimer_run_stat = False
@@ -404,21 +404,24 @@ def playendsound(sound):
         handle.loop_count = 1
         handle.status == False
 
-def time_calc():
+def time_calc(status):
     pomogrp = utils.common.props()
     prefs = utils.common.prefs()
     pomo = pomogrp.esti_pomo
     pomotime = int(prefs.lng_pomoCount)
-    lng_pomo_count = pomo // pomotime
-    pomogrp.complted_lng = lng_pomo_count
-    srt_pomo_count = pomo - lng_pomo_count
-    pomogrp.complted_srt = srt_pomo_count
-    fullpomotime = pomo * int(prefs.pomod_dur)
-    fullsrttime = srt_pomo_count * int(prefs.srtbrk_dur)
-    fulllngtime = lng_pomo_count * int(prefs.lngbrk_dur)
-    totaltime_inmins = fullpomotime + fullsrttime + fulllngtime
-    totaltime_insecs = totaltime_inmins * 60
-    pomogrp.total_timeSpent = format_time(totaltime_insecs)
+    if status == 'Completed':
+        lng_pomo_count = pomo // pomotime
+        pomogrp.complted_lng = lng_pomo_count
+        srt_pomo_count = pomo - lng_pomo_count
+        pomogrp.complted_srt = srt_pomo_count
+        fullpomotime = pomo * int(prefs.pomod_dur)
+        fullsrttime = srt_pomo_count * int(prefs.srtbrk_dur)
+        fulllngtime = lng_pomo_count * int(prefs.lngbrk_dur)
+        totaltime_inmins = fullpomotime + fullsrttime + fulllngtime
+        totaltime_insecs = totaltime_inmins * 60
+        pomogrp.total_timeSpent = format_time(totaltime_insecs)
+    elif status == 'Stopped':
+        pass
 
 def format_time(d):
     return '{:02}h {:02}m {:02}s'.format(d // 3600, d % 3600 // 60, d % 60)
@@ -433,3 +436,5 @@ def track(e,status):
             f.write(l)
     except PermissionError:
         bpy.ops.message.messagebox('INVOKE_DEFAULT', message = 'Please close the file to write the data', alrt_message = 'Error')
+    # resetting the value to empty
+    pomogrp.csv_status = ''
