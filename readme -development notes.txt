@@ -25,6 +25,9 @@ unregistering setuped
 11.09.21
 added saving to csv list
 
+13-.09.21
+updated linking to github
+
 To-Do
 -- custom time for all timers
 -- Sound for long and short break
