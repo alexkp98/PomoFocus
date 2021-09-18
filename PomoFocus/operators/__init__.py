@@ -5,6 +5,8 @@ from .all_operators import(
                             PomoFocus_OT_Pomostart,
                         PomoFocus_OT_popup,
                         PomoFocus_Addonkey,
+                        PF_OT_open_csv,
+                        PF_OT_clear_alldata,
                         MessageBox,
                         ResetTime,
                         add_hotkey,
@@ -19,6 +21,8 @@ classes = [
            PomoFocus_OT_Pomostart,
            PomoFocus_OT_popup,
            PomoFocus_Addonkey,
+           PF_OT_open_csv,
+           PF_OT_clear_alldata,
            MessageBox,
            ResetTime
 	]

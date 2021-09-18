@@ -6,6 +6,7 @@ from ..ui import PF_PT_NPanel, draw_pomodoro
 from .. import utils
 from .. import properties
 import aud
+import platform
 import csv
 
 
@@ -445,7 +446,54 @@ def track(e,status):
         with open(prefs.csv_path, mode='a', encoding='utf-8') as f:
             f.write(l)
     except PermissionError:
-        bpy.ops.message.messagebox('INVOKE_DEFAULT', message = 'Please close the file to write the data', alrt_message = 'Error')
+        bpy.ops.message.messagebox('INVOKE_DEFAULT', message = 'Please close file before updating the data', alrt_message = 'Error')
     # resetting the value to empty
     pomogrp.csv_status = ''
     pomogrp.added_time = ''
+
+class PF_OT_open_csv(bpy.types.Operator):
+    bl_idname = "pomofocus.open_csv"
+    bl_label = "Open CSV"
+    bl_description = "Open CSV with tracking data."
+    
+    def execute(self, context):
+        prefs = utils.common.prefs()
+        csv = prefs.csv_path
+        
+        if(not os.path.exists(csv)):
+            self.report({'ERROR'}, "No such file: {}".format(csv))
+            return {'FINISHED'}
+        
+        p = platform.system()
+        if(p == 'Windows'):
+            os.startfile(os.path.normpath(csv))
+        else:
+            raise OSError("Unknown platform: {}.".format(csv))
+        
+        return {'FINISHED'}
+
+class PF_OT_clear_alldata(bpy.types.Operator):
+    bl_idname = "pomofocus.clear_alldata"
+    bl_label = "Clear Data"
+    bl_description = "Removes all tracked data."
+    
+    def execute(self, context):
+        prefs = utils.common.prefs()
+        p = prefs.csv_path
+        try:
+            with open(p, mode='w', encoding='utf-8') as f:
+                f.write("{0}\n".format(prefs.csv_first_line))
+        except PermissionError:
+            bpy.ops.message.messagebox('INVOKE_DEFAULT', message = 'Please close the file before clearing the data', alrt_message = 'Error')
+        return {'FINISHED'}
+
+
+def file_status_check():
+    prefs = utils.common.prefs()
+    p = prefs.csv_path
+    try:
+        with open(p, mode='r', encoding='utf-8'):
+            pass
+    except IOError:
+        bpy.ops.message.messagebox('INVOKE_DEFAULT', message = 'Please close the file before starting ', alrt_message = 'Error')
+        

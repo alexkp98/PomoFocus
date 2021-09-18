@@ -33,7 +33,12 @@ def draw_pomodoro(self, context):
         box.prop(pomo_grp, "taskname", text="")
         box.label(text='Time needed to finish the task?')
         box.prop(pomo_grp, "esti_pomo", text="Pomodoro")
-        
+        # box.operator("pomofocus.open_csv", text= 'Open Data', icon= "NONE")
+        # box.operator("pomofocus.clear_alldata", text= 'Open Data', icon= "NONE")
+        boxcol = box.column()
+        rows = boxcol.row()
+        rows.operator("pomofocus.open_csv", text= 'Open Data', icon= "NONE")
+        rows.operator("pomofocus.clear_alldata",text= 'Clear Data', icon="NONE")
         boxcol = box.column()
         rows = boxcol.row()
         rows.operator("pomofocus.pomostart", text= 'Start Pomodoro', icon= "PLAY")
