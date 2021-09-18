@@ -101,7 +101,7 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
     previous_csv_path: bpy.props.StringProperty(name="Previous CSV Path", description="Used to detect path change and to copy old csv from on change.", default=Utils.get_default_csv_path(), maxlen=1024, subtype='FILE_PATH', )
     csv_path: bpy.props.StringProperty(name="CSV Path", description="Location of .csv with tracking data.", default=Utils.get_default_csv_path(), update=update, maxlen=1024, subtype='FILE_PATH', )
     file_status : BoolProperty(default = False)
-    
+
     playtickfile: StringProperty(
         name = "Select ticking sound",
         description = "Music to play while Timer is running",
@@ -193,8 +193,15 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
                 column.label(text='Recommended count long break is 4 Pomodoro', icon='INFO')
             box = layout.box()
             row = box.row()
+            row.enabled = not disable
+            row.label(text='Remove all the data from the file:')
+            row.operator("pomofocus.clear_alldata",text= 'Clear Data', icon="NONE")
+            row = box.row()
+            row.label(text='Data cannot be Restored',icon ="ERROR")
+            box = layout.box()
+            row = box.row()
             row.prop(self, 'enable_reset', text='Enable the Reset Button', icon='NONE')
-        
+            
             
         if self.prefs_tabs == 'keymaps':
             column = layout.column()

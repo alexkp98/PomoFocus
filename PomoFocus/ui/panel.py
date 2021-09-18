@@ -35,7 +35,6 @@ def draw_pomodoro(self, context):
         boxcol = box.column()
         rows = boxcol.row()
         rows.operator("pomofocus.open_csv", text= 'Open Data', icon= "NONE")
-        rows.operator("pomofocus.clear_alldata",text= 'Clear Data', icon="NONE")
         boxcol = box.column()
         rows = boxcol.row()
         prefs = utils.common.prefs()
