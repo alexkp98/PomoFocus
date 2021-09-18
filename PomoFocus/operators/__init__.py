@@ -2,7 +2,7 @@ import bpy
 from bpy.app.handlers import persistent
 from .. import utils
 from .all_operators import( 
-                            PomoFocus_OT_Pomostart,
+                        PomoFocus_OT_Pomostart,
                         PomoFocus_OT_popup,
                         PomoFocus_Addonkey,
                         PF_OT_open_csv,
@@ -11,9 +11,6 @@ from .all_operators import(
                         ResetTime,
                         add_hotkey,
                         remove_hotkey,
-                        check_pomo,
-                        check_lngbrk,
-                        check_srtbrk
                         
                         )
 
@@ -29,14 +26,14 @@ classes = [
 
 @persistent
 def load_handler(dummy):
-    if bpy.app.timers.is_registered(check_pomo):
-        bpy.app.timers.unregister(check_pomo)
+    if bpy.app.timers.is_registered(PomoFocus_OT_Pomostart.check_pomo):
+        bpy.app.timers.unregister(PomoFocus_OT_Pomostart.check_pomo)
 
-    if bpy.app.timers.is_registered(check_srtbrk):
-        bpy.app.timers.unregister(check_srtbrk)
+    if bpy.app.timers.is_registered(PomoFocus_OT_Pomostart.check_srtbrk):
+        bpy.app.timers.unregister(PomoFocus_OT_Pomostart.check_srtbrk)
 
-    if bpy.app.timers.is_registered(check_lngbrk):
-        bpy.app.timers.unregister(check_lngbrk)
+    if bpy.app.timers.is_registered(PomoFocus_OT_Pomostart.check_lngbrk):
+        bpy.app.timers.unregister(PomoFocus_OT_Pomostart.check_lngbrk)
     pomogrp = utils.common.props()
     pomogrp.pomotimer_run_stat = False
     pomogrp.srttimer_run_stat = False
@@ -46,6 +43,8 @@ def load_handler(dummy):
     pomogrp.rem_seconds = 0
     pomogrp.esti_pomo = 1
     pomogrp.complted_pomo = 0
+    pomogrp.complted_lng = 0
+    pomogrp.complted_srt = 0
 
 def register():
     add_hotkey()
@@ -61,14 +60,14 @@ def unregister():
     for c in classes:
         bpy.utils.unregister_class(c)
 
-    if bpy.app.timers.is_registered(check_pomo):
-        bpy.app.timers.unregister(check_pomo)
+    if bpy.app.timers.is_registered(PomoFocus_OT_Pomostart.check_pomo):
+        bpy.app.timers.unregister(PomoFocus_OT_Pomostart.check_pomo)
 
-    if bpy.app.timers.is_registered(check_srtbrk):
-        bpy.app.timers.unregister(check_srtbrk)
+    if bpy.app.timers.is_registered(PomoFocus_OT_Pomostart.check_srtbrk):
+        bpy.app.timers.unregister(PomoFocus_OT_Pomostart.check_srtbrk)
 
-    if bpy.app.timers.is_registered(check_lngbrk):
-        bpy.app.timers.unregister(check_lngbrk)
+    if bpy.app.timers.is_registered(PomoFocus_OT_Pomostart.check_lngbrk):
+        bpy.app.timers.unregister(PomoFocus_OT_Pomostart.check_lngbrk)
     pomogrp = utils.common.props()
     pomogrp.pomotimer_run_stat = False
     pomogrp.srttimer_run_stat = False
@@ -78,6 +77,8 @@ def unregister():
     pomogrp.rem_seconds = 0
     pomogrp.esti_pomo = 1
     pomogrp.complted_pomo = 0
+    pomogrp.complted_lng = 0
+    pomogrp.complted_srt = 0
     
     try:
         del bpy.types.Scene.pomofocus_idx

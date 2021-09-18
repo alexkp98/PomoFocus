@@ -18,7 +18,7 @@ class PF_PT_NPanel(bpy.types.Panel):
        
 def draw_pomodoro(self, context):
     l = self.layout
-    pomo_grp = context.scene.pomoproperty
+    pomo_grp = utils.common.props()
     row = l.row()
     row.ui_units_x = 5
     row.scale_y = 5
@@ -26,20 +26,21 @@ def draw_pomodoro(self, context):
     row.label(
             text='{:02} Minute(s) :{:02} Second(s)'.format(pomo_grp.rem_minute,pomo_grp.rem_seconds ))
     
-    
     if pomo_grp.anytimerrinning == False:
         box = l.box()
         box.label(text='What you are focusing on?')
         box.prop(pomo_grp, "taskname", text="")
         box.label(text='Time needed to finish the task?')
         box.prop(pomo_grp, "esti_pomo", text="Pomodoro")
-        # box.operator("pomofocus.open_csv", text= 'Open Data', icon= "NONE")
-        # box.operator("pomofocus.clear_alldata", text= 'Open Data', icon= "NONE")
         boxcol = box.column()
         rows = boxcol.row()
         rows.operator("pomofocus.open_csv", text= 'Open Data', icon= "NONE")
         rows.operator("pomofocus.clear_alldata",text= 'Clear Data', icon="NONE")
         boxcol = box.column()
+        rows = boxcol.row()
+        prefs = utils.common.prefs()
+        if prefs.file_status:
+            rows.label(text='Please close the file to start the task', icon = "ERROR")
         rows = boxcol.row()
         rows.operator("pomofocus.pomostart", text= 'Start Pomodoro', icon= "PLAY")
         rows.operator(
@@ -65,4 +66,3 @@ def draw_pomodoro(self, context):
         rows.operator(
                 "preferences.addon_show", icon="SETTINGS"
                     ).module = utils.common.module()
- 

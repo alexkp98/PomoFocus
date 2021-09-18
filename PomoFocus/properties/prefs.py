@@ -100,7 +100,8 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
     csv_first_line: bpy.props.StringProperty(name=".csv First Line", description=".csv first line to be written, contains field names.", default="Added Date and time,Task Name,Pomodoro's used,Short Break Count,Long Break Count,Total Time Spent,Status", )
     previous_csv_path: bpy.props.StringProperty(name="Previous CSV Path", description="Used to detect path change and to copy old csv from on change.", default=Utils.get_default_csv_path(), maxlen=1024, subtype='FILE_PATH', )
     csv_path: bpy.props.StringProperty(name="CSV Path", description="Location of .csv with tracking data.", default=Utils.get_default_csv_path(), update=update, maxlen=1024, subtype='FILE_PATH', )
-
+    file_status : BoolProperty(default = False)
+    
     playtickfile: StringProperty(
         name = "Select ticking sound",
         description = "Music to play while Timer is running",
