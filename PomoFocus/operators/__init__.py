@@ -1,6 +1,8 @@
 import bpy
 from bpy.app.handlers import persistent
 from .. import utils
+from ...__init__ import bl_info
+from . updater import Pomofocus_OT_CheckUpdate
 from .all_operators import( 
                         PomoFocus_OT_Pomostart,
                         PomoFocus_OT_popup,
@@ -14,7 +16,7 @@ from .all_operators import(
                         
                         )
 
-classes = [
+classes = [Pomofocus_OT_CheckUpdate,
            PomoFocus_OT_Pomostart,
            PomoFocus_OT_popup,
            PomoFocus_Addonkey,
@@ -47,6 +49,11 @@ def load_handler(dummy):
     pomogrp.complted_srt = 0
 
 def register():
+    # Reset Updater
+    prefs = utils.common.prefs()
+    prefs.needs_update = ""
+    # Pass current add-on version to Updater
+    updater.addon_version = bl_info['version']
     add_hotkey()
     for c in classes:
         bpy.utils.register_class(c)

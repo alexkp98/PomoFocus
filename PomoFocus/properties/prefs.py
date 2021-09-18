@@ -4,6 +4,7 @@ import rna_keymap_ui
 from .. import utils
 from ..operators import PomoFocus_Addonkey
 import datetime
+from ..operators.updater import changelog,latest_msg
 
 class Utils():
 
@@ -14,39 +15,6 @@ class Utils():
 
 class Runtime():
     start = datetime.datetime.now()
-
-def update(self, context):
-    prefs = Utils.get_preferences()
-    
-    current = prefs.csv_path
-    previous = prefs.previous_csv_path
-    
-    if(current == previous):
-        # no change
-        return
-    
-    Runtime.path_message = ""
-    
-    if(current == ""):
-        current = Utils.get_default_csv_path()
-    
-    if(os.path.isdir(current)):
-        current = os.path.join(current, os.path.split(Utils.get_default_csv_path())[1])
-    
-    current = bpy.path.ensure_ext(current, ".csv", case_sensitive=True, )
-    
-    d = os.path.split(current)[0]
-    if(not os.access(d, os.W_OK)):
-        current = Utils.get_default_csv_path()
-    if(current != previous and not os.path.exists(current) and os.path.exists(previous)):
-        with open(current, mode='w', encoding='utf-8') as f:
-            with open(previous, encoding='utf-8') as o:
-                c = "".join(o.readlines())
-            f.write(c)
-    
-    prefs.previous_csv_path = current
-    prefs.csv_path = current
-
 
 class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
 
@@ -80,7 +48,8 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
 
     prefs_tabs: EnumProperty(items=(('Pomodoro Settings', "Pomodoro Settings", "Pomodoro Settings"),
                  ('keymaps', "Keymaps", "Keymaps"),
-                 ('Sounds', "Sounds", "Sounds")), default='Pomodoro Settings')
+                 ('Sounds', "Sounds", "Sounds"),
+                 ('Update', "Update", "Update")), default='Pomodoro Settings')
 
     srtbrk_dur : EnumProperty(items=srtbrk, description='Short Break Duration', 
                 name='Short Break', default = default_srtbrk)
@@ -98,9 +67,14 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
 
     # Saving the details
     csv_first_line: bpy.props.StringProperty(name=".csv First Line", description=".csv first line to be written, contains field names.", default="Added Date and time,Task Name,Pomodoro's used,Short Break Count,Long Break Count,Total Time Spent,Status", )
-    previous_csv_path: bpy.props.StringProperty(name="Previous CSV Path", description="Used to detect path change and to copy old csv from on change.", default=Utils.get_default_csv_path(), maxlen=1024, subtype='FILE_PATH', )
-    csv_path: bpy.props.StringProperty(name="CSV Path", description="Location of .csv with tracking data.", default=Utils.get_default_csv_path(), update=update, maxlen=1024, subtype='FILE_PATH', )
+    csv_path: bpy.props.StringProperty(name="CSV Path", description="Location of .csv with tracking data.", default=Utils.get_default_csv_path(), maxlen=1024, subtype='FILE_PATH', )
     file_status : BoolProperty(default = False)
+
+    # Updater Preference
+    needs_update : StringProperty()
+    changelog_expanded : BoolProperty(
+        default= False,
+    )
 
     playtickfile: StringProperty(
         name = "Select ticking sound",
@@ -203,7 +177,7 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
             row.prop(self, 'enable_reset', text='Enable the Reset Button', icon='NONE')
             
             
-        if self.prefs_tabs == 'keymaps':
+        elif self.prefs_tabs == 'keymaps':
             column = layout.column()
             column.label(text='Add Shortcut for Pomodoro')
             box = layout.box()
@@ -225,13 +199,54 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
                 col.label(text='No hotkey found')
                 col.operator((PomoFocus_Addonkey.bl_idname), text='Add hotkey entry')
         
-        if self.prefs_tabs == 'Sounds':
+        elif self.prefs_tabs == 'Sounds':
             column = layout.column()
             # playendfile
             column.prop(self,'playtickfile')
             column.prop(self,'use_tick')
             column.prop(self,'playendfile')
             column.prop(self,'use_endSound')
+        
+        elif self.prefs_tabs == 'Update':
+            wm = bpy.context.window_manager
+
+            box = layout.box()
+            split = box.split(factor = 0.45)
+            row = split.row()
+            row.operator("pomofocus.check_update")
+            row = split.row(align=True)
+            row.operator("wm.url_open", text="Gumroad").url = "https://gumroad.com/library"
+            row.operator("wm.url_open", text="Blender Market").url = "https://blendermarket.com/account/orders"
+            if self.needs_update and self.needs_update != latest_msg:
+                row = box.row()
+                row.alert = True
+                row.label(text=self.needs_update)
+                
+                row = box.row()
+                row.prop(self, "changelog_expanded",
+                    icon="TRIA_DOWN" if self.changelog_expanded else "TRIA_RIGHT",
+                    icon_only=True, emboss=False
+                )
+                row.label(text='Changelog')
+                if self.changelog_expanded:
+                    for v in changelog:
+                        version_box = box.box()
+                        row = version_box.row()
+                        row.scale_y = 0.6
+                        row.label(text=v[0]+":")
+                        
+                        split_str = v[1].splitlines()
+                        for str in split_str:
+                            row = version_box.row()
+                            row.scale_y = 0.5
+                            row.label(text=str)
+            elif self.needs_update == latest_msg:
+                row = box.row()
+                row.label(text=latest_msg)            
+            else:
+                row = box.row()
+                row.label(text="Press 'Check for Updates' to verify if you are "
+                        "running the latest version of the add-on.")
     def execute(self, context):
         return {'FINISHED'}
 
