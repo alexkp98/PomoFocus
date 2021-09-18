@@ -25,15 +25,20 @@ unregistering setuped
 11.09.21
 added saving to csv list
 
-13-.09.21
+13.09.21
 updated linking to github
 add data for non completed items
 add date and status in csv format
 
+19.09.21
+added open button for csv file
+added updater
+minimized the code format
+
 To-Do
 -- custom time for all timers
 -- Sound for long and short break
--- add open button for csv file
+-- 
 -- 
 
 
