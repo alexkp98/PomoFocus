@@ -76,6 +76,10 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
         default= False,
     )
 
+    # 2.93 check
+    is_293 : BoolProperty(default = False)
+
+
     playtickfile: StringProperty(
         name = "Select ticking sound",
         description = "Music to play while Timer is running",
@@ -115,14 +119,14 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
     use_endSound: BoolProperty(
         name = "Play sound upon Pomodoro task completion",
         description = "Enable the ability to play a sound when a Pomodoro task completes",
-        default = True)
+        default = False)
 
     def draw(self, context):
         layout = self.layout
         row = layout.row(align=True)
         row.prop(self, "prefs_tabs", expand=True)
 
-        if self.prefs_tabs == 'Pomodoro Settings':
+        if self.prefs_tabs == 'Pomodoro Settings' :
             
             column = layout.column()
             row = column.row()
@@ -175,9 +179,8 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
             box = layout.box()
             row = box.row()
             row.prop(self, 'enable_reset', text='Enable the Reset Button', icon='NONE')
-            
-            
-        elif self.prefs_tabs == 'keymaps':
+             
+        if self.prefs_tabs == 'keymaps' :
             column = layout.column()
             column.label(text='Add Shortcut for Pomodoro')
             box = layout.box()
@@ -198,16 +201,19 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
             else:
                 col.label(text='No hotkey found')
                 col.operator((PomoFocus_Addonkey.bl_idname), text='Add hotkey entry')
-        
-        elif self.prefs_tabs == 'Sounds':
+
+        if self.prefs_tabs == 'Sounds' and not self.is_293:
             column = layout.column()
-            # playendfile
+                # playendfile
             column.prop(self,'playtickfile')
             column.prop(self,'use_tick')
             column.prop(self,'playendfile')
             column.prop(self,'use_endSound')
-        
-        elif self.prefs_tabs == 'Update':
+        elif self.prefs_tabs == 'Sounds' and self.is_293:
+            column = layout.column()
+            column.label(text="Not available for 2.93 users")
+
+        if self.prefs_tabs == 'Update':
             wm = bpy.context.window_manager
 
             box = layout.box()
@@ -240,7 +246,7 @@ class PomoFocus_AP_Prefs(bpy.types.AddonPreferences):
                             row = version_box.row()
                             row.scale_y = 0.5
                             row.label(text=str)
-            elif self.needs_update == latest_msg:
+            if self.needs_update == latest_msg:
                 row = box.row()
                 row.label(text=latest_msg)            
             else:

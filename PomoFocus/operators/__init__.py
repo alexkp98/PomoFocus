@@ -54,6 +54,10 @@ def register():
     prefs.needs_update = ""
     # Pass current add-on version to Updater
     updater.addon_version = bl_info['version']
+    cur_ver = bpy.app.version_string
+    if '2.93' in cur_ver:
+        prefs.is_293 = True
+    
     add_hotkey()
     for c in classes:
         bpy.utils.register_class(c)
