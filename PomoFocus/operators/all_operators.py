@@ -32,7 +32,7 @@ class PomoFocus_OT_Pomostart(bpy.types.Operator):
 
         if pomogrp.added_time == '':
             pomogrp.added_time = now.strftime("%Y-%m-%d %H:%M:%S")
-        totaltime = now + datetime.timedelta(minutes = 1) 
+        totaltime = now + datetime.timedelta(minutes = int(prefs.pomod_dur)) 
         added_time = totaltime.strftime("%Y-%m-%d %H:%M:%S")
 
         pomogrp.year = dt(totaltime,"%Y")
