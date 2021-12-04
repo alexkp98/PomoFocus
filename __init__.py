@@ -16,7 +16,7 @@ bl_info = {
     "author" : "Alex Paul",
     "description" : "",
     "blender" : (2, 91, 0),
-    "version" : (3, 0, 0),
+    "version" : (3, 0, 1),
     "location" : "View3D - N panel(default)",
     "tracker_url" : (
         "https://github.com/alexkp98/PomoFocus/issues/new?assignees=&labels=&template=bug_report.md&title="),
